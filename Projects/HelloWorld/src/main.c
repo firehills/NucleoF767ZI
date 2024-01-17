@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "main.h"
 //#include "app_threadx.h"
 
@@ -16,8 +17,9 @@ int main (void)
 
   /* Enable D-Cache---------------------------------------------------------*/
   SCB_EnableDCache();
-   HAL_Init();
- /* Configure the system clock */
+  HAL_Init();
+
+  /* Configure the system clock */
   SystemClock_Config();
 
   /* USER CODE BEGIN SysInit */
@@ -27,15 +29,22 @@ int main (void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART3_UART_Init();
-  
+  //Error_Handler();
   while (1)
   {
-      char welcome_string[] = "HelloWorld\n";
+      char welcome_string[] = "Hello STMF767 World!!";
+      //HAL_USART_Transmit(&huart3, welcome_string, sizeof(welcome_string), 1000);
+      printf("hhh\n");
       HAL_UART_Transmit(&huart3, welcome_string, sizeof(welcome_string), 1000);
+      char cr = '\n';
+      HAL_UART_Transmit(&huart3, &cr, 1, 1000);
+      char lf = '\r';
+      HAL_UART_Transmit(&huart3, &lf, 1, 1000);
+      
       HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_14, GPIO_PIN_RESET);
-      HAL_Delay(200);
-      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_14, GPIO_PIN_SET);
-      HAL_Delay(200);
+      HAL_Delay(1000);
+      HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_14, GPIO_PIN_SET); 
+      HAL_Delay(1000);
   }
 }
 
@@ -119,8 +128,7 @@ void SystemClock_Config(void)
   */
 static void MX_USART3_UART_Init(void)
 {
-
-  /* USER CODE BEGIN USART3_Init 0 */
+ /* USER CODE BEGIN USART3_Init 0 */
 
   /* USER CODE END USART3_Init 0 */
 
