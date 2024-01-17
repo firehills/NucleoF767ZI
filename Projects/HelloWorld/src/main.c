@@ -8,6 +8,27 @@ void SystemClock_Config(void);
 static void MPU_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART3_UART_Init(void);
+
+
+
+// Retarget printf to UART3
+#ifdef __GNUC__
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif
+PUTCHAR_PROTOTYPE
+{
+    HAL_UART_Transmit(&huart3, (uint8_t *)&ch, 1, 0xFFFF);
+}
+
+
+
+
+
+
+
+
 int main (void)
 { /* MPU Configuration--------------------------------------------------------*/
   MPU_Config();
@@ -29,12 +50,11 @@ int main (void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART3_UART_Init();
-  //Error_Handler();
+
+  uint32_t loop_count = 0;
   while (1)
   {
-      char welcome_string[] = "Hello STMF767 World!!";
-      //HAL_USART_Transmit(&huart3, welcome_string, sizeof(welcome_string), 1000);
-      printf("hhh\n");
+      char welcome_string[] = "Hello STMF767xx World!!";
       HAL_UART_Transmit(&huart3, welcome_string, sizeof(welcome_string), 1000);
       char cr = '\n';
       HAL_UART_Transmit(&huart3, &cr, 1, 1000);
@@ -45,6 +65,7 @@ int main (void)
       HAL_Delay(1000);
       HAL_GPIO_WritePin(GPIOB, GPIO_PIN_0|GPIO_PIN_14, GPIO_PIN_SET); 
       HAL_Delay(1000);
+      printf("printf shoudl work now - loop %d\n", loop_count++);
   }
 }
 
